@@ -25,7 +25,7 @@ for i in range(10):
         action = probsToIndex(action_probs)
         state, reward, done, _ = env.step(action)
         env.render()
-        time.sleep(0.1)
+        time.sleep(0.01)
 
         returns[-1] += reward
 env.close()
