@@ -9,7 +9,6 @@ class VanillaPolicyGradientAgent:
         self.input_size = input_size
         self.output_size = output_size
 
-        self.policy = policy_net(input_size, output_size)
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.policy = policy_net(input_size, output_size).to(self.device)
         self.optimizer = optim.Adam(self.policy.parameters())
@@ -61,7 +60,7 @@ class VanillaPolicyGradientAgent:
         if self.timestep % self.batch_size == 0:
             advantages_flat = list(itertools.chain(*self.advantages))
             for t in range(len(advantages_flat)):
-                self.loss -= advantages_flat[t] * self.action_prob_dists[t][self.actions[t]]
+                self.loss -= advantages_flat[t] * torch.log(self.action_prob_dists[t][self.actions[t]])
             self.loss /= len(advantages_flat)
 
             loss_value = self.loss.item()

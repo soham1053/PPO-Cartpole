@@ -12,7 +12,7 @@ def plotReturns(values, moving_avg_period):
 
     moving_avg = get_moving_average(moving_avg_period, values)
     plt.plot(moving_avg, 'green')
-    plt.pause(0.001)
+    plt.pause(0.00000000000001)
 
 
 def plotLosses(values, moving_avg_period):

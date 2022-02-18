@@ -12,12 +12,12 @@ def run():
     output_size = env.action_space.n
 
     # todo hyperparameter tuning
-    agent = VanillaPolicyGradientAgent(input_size, output_size, Policy, batch_size=1, gamma=1.0)
+    agent = VanillaPolicyGradientAgent(input_size, output_size, Policy, batch_size=100, gamma=1.0)
 
     returns = []
     losses = []
     log_period = 100
-    for episode in range(1, 100001):
+    for episode in range(1, 1000001):
         state = env.reset()
 
         rewards = []
