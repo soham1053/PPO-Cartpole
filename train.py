@@ -1,8 +1,10 @@
 import gym
 import matplotlib.pyplot as plt
 from utils import plotReturns, plotLosses
-from nets import Policy
+from nets import Policy, Value
 from vpg import VanillaPolicyGradientAgent
+from a2c import AdvantageActorCriticAgent
+from ppo import ProximalPolicyOptimizationAgent
 
 
 def run():
@@ -11,13 +13,14 @@ def run():
     input_size = env.observation_space.shape[0]
     output_size = env.action_space.n
 
-    # todo hyperparameter tuning
-    agent = VanillaPolicyGradientAgent(input_size, output_size, Policy, batch_size=100, gamma=1.0)
+    agent = ProximalPolicyOptimizationAgent(input_size, output_size, Policy, Value, name="ppo")
 
     returns = []
-    losses = []
-    log_period = 100
-    for episode in range(1, 1000001):
+    policyLosses = []
+    valueLosses = []
+    log_period = 5
+    save_period = 100
+    for episode in range(1, 50000):
         state = env.reset()
 
         rewards = []
@@ -31,14 +34,20 @@ def run():
             rewards.append(reward)
             returns[-1] += reward
 
-        loss = agent.learn(rewards)
-        if loss["hasLoss"]:
-            losses.append(loss["loss"])
+            loss = agent.learn(reward, done)
+            if "policyLoss" in loss:
+                policyLosses.append(sum(loss["policyLoss"]) / len(loss["policyLoss"]))
+            if "valueLosses" in loss:
+                valueLosses.append(sum(loss["valueLosses"]) / len(loss["valueLosses"]))
 
         if episode % log_period == 0:
-            plotReturns(returns, 100)
-            plotLosses(losses, 100)
-            agent.save('policy.pt')
+            plotReturns(returns, 100, idx=1, color='blue')
+            if len(policyLosses) > 0:
+                plotLosses(policyLosses, 100, "Policy", idx=2, color='red')
+            if len(valueLosses) > 0:
+                plotLosses(valueLosses, 100, "Value", idx=3, color='purple')
+        if episode % save_period == 0:
+            agent.save()
 
     env.close()
     plt.show()

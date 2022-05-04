@@ -3,28 +3,28 @@ import torch
 import numpy as np
 
 
-def plotReturns(values, moving_avg_period):
-    plt.figure(100)
+def plotReturns(values, moving_avg_period, idx, color='blue'):
+    plt.figure(idx)
     plt.clf()
     plt.xlabel('Episode')
     plt.ylabel('Return')
-    plt.plot(values, 'blue')
+    plt.plot(values, color)
 
     moving_avg = get_moving_average(moving_avg_period, values)
     plt.plot(moving_avg, 'green')
     plt.pause(0.00000000000001)
 
 
-def plotLosses(values, moving_avg_period):
-    plt.figure(101)
+def plotLosses(values, moving_avg_period, loss_type, idx, color='red'):
+    plt.figure(idx)
     plt.clf()
     plt.xlabel('Episode')
-    plt.ylabel('Loss')
-    plt.plot(values, 'red')
+    plt.ylabel(loss_type + ' Loss')
+    plt.plot(values, color)
 
     moving_avg = get_moving_average(moving_avg_period, values)
     plt.plot(moving_avg, 'orange')
-    plt.pause(0.001)
+    plt.pause(0.00000000000001)
 
 
 def get_moving_average(period, values):
